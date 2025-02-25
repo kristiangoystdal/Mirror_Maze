@@ -1,0 +1,65 @@
+# =============== #
+# Unity Generated #
+# =============== #
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# User-specific
+UserSettings/
+
+# Crash Reports
+*.crash
+*.pidb
+*.svd
+
+# Visual Studio / Rider / JetBrains
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.VC.db
+.idea/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# TextMeshPro generated files
+[Tt]ext[Mm]esh[Pp]ro/
+
+# Unity Cloud Build
+[Uu]ser[Ss]ettings/
+
+# Auto-generated local cache files
+*.apk
+*.unitypackage
+*.asset
+*.tpk
+
+# Exclude logs
+Logs/
+
+# Rider Temp files
+.idea/
+*.ipr
+*.iws
+
+# Exclude Build folders
+[Bb]uild/
+[Bb]uilds/
+[Bb]in/
