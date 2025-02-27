@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TileMap : MonoBehaviour
+public class TileMapController : MonoBehaviour
 {
     public bool IsTileAt(Tilemap tilemap, Vector3 worldPosition)
     {

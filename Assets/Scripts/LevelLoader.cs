@@ -1,35 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class LevelLoader : MonoBehaviour
 {
-    private GameObject controller = GameObject.Find("Controller");
-    private PlayerMovement playerMovement_script;
-
-    private TileMap tileMap_script = new TileMap();
+    private GameObject controller;
+    private TileMapController tileMap_script;
 
     public TileBase winTile;
     public GameObject playerLeft;
     public GameObject playerRight;
 
-    public Tilemap tileMap;
+    public Tilemap tilemap;
 
     public LevelInfo currentLevel;
+
+    public TMP_Text levelTitle;
 
     public struct LevelInfo
     {
         public string name;
-        public Vector3 goalPositionLeft; // X (-21 to 0)
-        public Vector3 goalPositionRight;
-        public Vector3 startPositionLeft;
-        public Vector3 startPositionRight;
+        public Vector3 goalPositionLeft; // X (-21 to 1) Y (-10 to 10)
+        public Vector3 goalPositionRight; // X (1 to 21) Y (-10 to 10)
+        public Vector3 startPositionLeft; // X (-21 to 1) Y (-10 to 10)
+        public Vector3 startPositionRight; // X (1 to 21) Y (-10 to 10)
 
-        public Vector3[] obstaclePositions;
-        public Vector3[] dangerPositions;
+        public Vector3[] obstaclePositions; // X (-21 to 21) Y (-10 to 10)
+        public Vector3[] dangerPositions; // X (-21 to 21) Y (-10 to 10)
 
         public int maxMoves;
 
@@ -55,19 +57,43 @@ public class LevelLoader : MonoBehaviour
         }
     }
 
-    public static LevelInfo[] levels = new LevelInfo[]
+    public static LevelInfo[] tutorialLevels = new LevelInfo[]
     {
         // Tutorial
         new LevelInfo(
-            "Tutorial",
-            new Vector3(-1, -10, 0), // Goal position left
-            new Vector3(1, 10, 0), // Goal position right
-            new Vector3(-1, -3, 0), // Start position left
-            new Vector3(1, 3, 0), // Start position right
+            "Tutorial 1",
+            new Vector3(-14, -6, 0), // Goal position left
+            new Vector3(14, 6, 0), // Goal position right
+            new Vector3(-2, -3, 0), // Start position left
+            new Vector3(2, 3, 0), // Start position right
+            new Vector3[] { new Vector3(0, 0, 0) },
+            new Vector3[] { new Vector3(0, 0, 0) },
+            50
+        ),
+        new LevelInfo(
+            "Tutorial 2",
+            new Vector3(-14, -6, 0), // Goal position left
+            new Vector3(14, 6, 0), // Goal position right
+            new Vector3(-2, -3, 0), // Start position left
+            new Vector3(2, 3, 0), // Start position right
             new Vector3[] { new Vector3(0, 0, 0) },
             new Vector3[] { new Vector3(0, 0, 0) },
             10
         ),
+        new LevelInfo(
+            "Tutorial 3",
+            new Vector3(-14, -6, 0), // Goal position left
+            new Vector3(14, 6, 0), // Goal position right
+            new Vector3(-2, -3, 0), // Start position left
+            new Vector3(2, 3, 0), // Start position right
+            new Vector3[] { new Vector3(0, 0, 0) },
+            new Vector3[] { new Vector3(0, 0, 0) },
+            10
+        ),
+    };
+
+    public static LevelInfo[] levels = new LevelInfo[]
+    {
         // Level 1
         new LevelInfo(
             "Level 1",
@@ -96,16 +122,39 @@ public class LevelLoader : MonoBehaviour
     void Start()
     {
         controller = GameObject.Find("Controller");
-        playerMovement_script = controller.GetComponent<PlayerMovement>();
+        tileMap_script = controller.GetComponent<TileMapController>();
 
-        currentLevel = levels[0];
+        if (PlayerPrefs.GetInt("Tutorial") == 1)
+        {
+            currentLevel = tutorialLevels[PlayerPrefs.GetInt("CurrentLevel")];
+        }
+        else
+        {
+            currentLevel = levels[PlayerPrefs.GetInt("CurrentLevel")];
+        }
+        Debug.Log("Current level: " + currentLevel.name);
         LoadLevel(currentLevel);
     }
 
-    void Update() { }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            // ResetLevel();
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            PlayerPrefs.SetInt("Tutorial", 1);
+            PlayerPrefs.SetInt("CurrentLevel", 0);
+            PlayerPrefs.Save();
+        }
+    }
 
     public void LoadLevel(LevelInfo level)
     {
+        levelTitle.text = level.name;
+
         playerLeft.transform.position = new Vector3(
             level.startPositionLeft.x + 0.5f,
             level.startPositionLeft.y + 0.5f,
@@ -117,14 +166,14 @@ public class LevelLoader : MonoBehaviour
             level.startPositionRight.z
         );
 
-        tileMap_script.PlaceTile(tileMap, level.goalPositionLeft, winTile);
-        tileMap_script.PlaceTile(tileMap, level.goalPositionRight, winTile);
+        tileMap_script.PlaceTile(tilemap, level.goalPositionLeft, winTile);
+        tileMap_script.PlaceTile(tilemap, level.goalPositionRight, winTile);
 
-        print("Loaded level: " + level.name);
-        print("Goal position left: " + level.goalPositionLeft);
-        print("Goal position right: " + level.goalPositionRight);
-        print("Start position left: " + level.startPositionLeft);
-        print("Start position right: " + level.startPositionRight);
-        print("Max moves: " + level.maxMoves);
+        // print("Loaded level: " + level.name);
+        // print("Goal position left: " + level.goalPositionLeft);
+        // print("Goal position right: " + level.goalPositionRight);
+        // print("Start position left: " + level.startPositionLeft);
+        // print("Start position right: " + level.startPositionRight);
+        // print("Max moves: " + level.maxMoves);
     }
 }
